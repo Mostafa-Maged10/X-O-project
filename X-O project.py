@@ -72,7 +72,7 @@ class Board:
                 print("-"*5)
     def update_board(self, choice, symbol):
         if self.is_valid_move(choice):
-            self.baord = symbol
+            self.board[choice - 1] = symbol
             return True
         return False
     def is_valid_move(self, choice):
@@ -97,17 +97,17 @@ class Game:
             self.quit_game()
     
     def setup_players(self):
-        for number ,player in enumerate(self.player, start= 1 ):
+        for number ,player in enumerate(self.players, start= 1 ):
             print(f"player {number} enter your details: ")
-            player.choose_name(self)
-            player.choose_symbol(self)
+            player.choose_name()
+            player.choose_symbol()
             clear_screen()
             
     def play_game(self):
         while True:
-            self.play_turn
+            self.play_turn()
             if self.check_win() or self.check_draw():
-                choice = self.menu.display_end_game_menu
+                choice = self.menu.display_end_game_menu()
                 if choice == "1":
                     self.restart_game()
                 else:
@@ -116,7 +116,7 @@ class Game:
     def restart_game(self):
         self.board.reset_board()
         self.current_player_index = 0
-        self.play_game()
+        self.play_game()    
     def check_win(self):
         win_condition = [
             [0,1,2], [3,4,5], [6,7,8], #row
@@ -136,7 +136,7 @@ class Game:
         while True:
             try:
                 cell_choice = int(input("choose a cell(1-9): "))
-                if 1<= cell_choice <=9 and self.board.updtae_board(cell_choice, player.symbol):
+                if 1<= cell_choice <=9 and self.board.update_board(cell_choice, player.symbol):
                     break        
                 else:
                  print("invalid move please try again")
