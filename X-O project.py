@@ -51,8 +51,8 @@ class Menu:
         1- Restart game
         2- Quit game
         Enter your choise (1 or 2) : """
-        self.choice = input(menu_text)
-    
+        choice = input(menu_text)
+        return choice 
     def validate_choice(self):
         choice = input()
         while(choice != "1" and choice != "2"):
@@ -106,13 +106,24 @@ class Game:
     def play_game(self):
         while True:
             self.play_turn()
-            if self.check_win() or self.check_draw():
-                choice = self.menu.display_end_game_menu()
-                if choice == "1":
-                    self.restart_game()
-                else:
-                    self.quit_game()
-                    break
+            winner = self.check_win()
+            if winner:
+                clear_screen()
+                self.board.display_board()
+                print(f"congratulations {winner.name}! you have one the game!")
+                break
+            if self.check_draw():
+                clear_screen()
+                self.board.display_board()
+                print("the game ended in a draw!")
+                break
+            # self.play_turn()
+            # if self.check_win() or self.check_draw():
+        choice = self.menu.display_end_game_menu()
+        if choice == "1":
+            self.restart_game()
+        else:
+            self.quit_game()
     def restart_game(self):
         self.board.reset_board()
         self.current_player_index = 0
@@ -125,12 +136,14 @@ class Game:
         ]
         for combo in win_condition :
             if (self.board.board[combo[0]] == self.board.board[combo[1]] == self.board.board[combo[2]]):
-                return True
-        return False
+                return self.players[1 - self.current_player_index]
+        return None
+        #return False
     def check_draw(self):
        return all(not cell.isdigit() for cell in self.board.board)
     def play_turn(self):
         player = self.players[self.current_player_index]
+        clear_screen()
         self.board.display_board()
         print(f"{player.name}'s turn ({player.symbol})")
         while True:
@@ -147,7 +160,7 @@ class Game:
         self.current_player_index = 1-self.current_player_index
     def quit_game(self):
         print("thank you for playing!")
-
+        exit()
 game = Game()
 game.start_game()
 
